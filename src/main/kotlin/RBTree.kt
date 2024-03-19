@@ -44,16 +44,18 @@ class RBTree<K : Comparable<K>, V> {
             node.value = value
         }
 
+        var newNode: Node<K, V>? = null
         if (isRed(node.right) && !isRed(node.left)) {
-            return rotateLeft(node)
+            newNode = rotateLeft(node)
         }
         if (isRed(node.left) && isRed(node.left?.left)) {
-            return rotateRight(node)
+            newNode = rotateRight(node)
         }
-        if (isRed(node.left) && isRed(node.right)) {
-            flipColors(node)
+        newNode = newNode ?: node
+        if (isRed(newNode.left) && isRed(newNode.right)) {
+            flipColors(newNode)
         }
-        return node
+        return newNode
     }
 
     private fun isRed(node: Node<K, V>?): Boolean {
@@ -86,9 +88,9 @@ class RBTree<K : Comparable<K>, V> {
     }
 
     fun flipColors(node: Node<K, V>) {
-        node.color = Color.RED
-        node.left?.color = Color.BLACK
-        node.right?.color = Color.BLACK
+        node.color = if (node.color == Color.RED) Color.BLACK else Color.RED
+        node.left?.color = if (node.left?.color == Color.RED) Color.BLACK else Color.RED
+        node.right?.color = if (node.right?.color == Color.RED) Color.BLACK else Color.RED
     }
 
     fun preOrderRecursive() {
